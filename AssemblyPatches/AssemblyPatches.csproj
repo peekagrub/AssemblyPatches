@@ -1,37 +1,43 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net35</TargetFramework>
         <AssemblyName>Assembly-CSharp.mm</AssemblyName>
         <LangVersion>latest</LangVersion>
-        <Configurations>ScreenShakeOnly;MiniSaveStatesOnly;ScreenShakeAndMiniSaveStates</Configurations>
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
-    <PropertyGroup Condition="$(Configuration) == 'ScreenShakeOnly'">
-        <DefineConstants>SCREENSHAKEONLY</DefineConstants>
-    </PropertyGroup>
-    <PropertyGroup Condition="$(Configuration) == 'MiniSaveStatesOnly'">
-        <DefineConstants>MINISAVESTATESONLY</DefineConstants>
-    </PropertyGroup>
-    <PropertyGroup Condition="$(Configuration) == 'ScreenShakeAndMiniSaveStates'">
-        <DefineConstants>SCREENSHAKEANDMINISAVESTATES</DefineConstants>
-    </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="MonoMod" Version="21.1.11.1">
+        <PackageReference Include="MonoMod" Version="21.3.1.1">
             <IncludeAssets>all</IncludeAssets>
         </PackageReference>
     </ItemGroup>
     <ItemGroup>
-        <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+        <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral">
             <HintPath>../vanilla/Assembly-CSharp.dll</HintPath>
             <SpecificVersion>False</SpecificVersion>
         </Reference>
         <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <HintPath>../vanilla/UnityEngine.dll</HintPath>
         </Reference>
+		<Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+			<HintPath>../vanilla/UnityEngine.CoreModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+			<HintPath>../vanilla/UnityEngine.IMGUIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.InputModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+			<HintPath>../vanilla/UnityEngine.InputModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+			<HintPath>../vanilla/UnityEngine.InputLegacyModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+			<HintPath>../vanilla/UnityEngine.JSONSerializeModule.dll</HintPath>
+		</Reference>
         <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, PublicKeyToken=null">
             <HintPath>../vanilla/PlayMaker.dll</HintPath>
         </Reference>
     </ItemGroup>
+
     <ItemGroup>
         <Files Include="$(SolutionDir)Vanilla/*" />
         <BuildDir Include="$(TargetDir)" />

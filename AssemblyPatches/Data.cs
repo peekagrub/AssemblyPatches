@@ -24,3 +24,10 @@ public struct SavedState
     public SceneData savedSceneData;
     public Vector3 savePos;
 }
+
+[Serializable]
+public struct Configuration
+{
+    public bool ScreenShakeModifier;
+    public bool MiniSaveStates;
+}

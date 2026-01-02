@@ -1,6 +1,8 @@
-using UnityEngine;
 using MonoMod;
 using Patches.Modifiers;
+using System;
+using System.IO;
+using UnityEngine;
 
 #pragma warning disable CS0626
 
@@ -9,18 +11,8 @@ namespace Patches;
 [MonoModPatch("global::GameManager")]
 public class GameManagerPatch : global::GameManager
 {
-    #if SCREENSHAKEONLY
-    public const bool IsMiniSaveStatesActive = false;
-    public const bool IsScreenShakeModifierActive = true;
-    #endif
-    #if MINISAVESTATESONLY
-    public const bool IsMiniSaveStatesActive = true;
-    public const bool IsScreenShakeModifierActive = false;
-    #endif
-    #if SCREENSHAKEANDMINISAVESTATES
-    public const bool IsMiniSaveStatesActive = true;
-    public const bool IsScreenShakeModifierActive = true;
-    #endif
+    public Configuration Config = new();
+
     private void OnGUI()
     {
         if (this.GetSceneNameString() == Constants.MENU_SCENE)
@@ -40,19 +32,21 @@ public class GameManagerPatch : global::GameManager
             );
 
             string WarningText = string.Empty;
-            if (IsMiniSaveStatesActive && IsScreenShakeModifierActive)
+            else if (Config.MiniSaveStates && Config.ScreenShakeModifier)
             {
                 WarningText = "MiniSaveStates and ScreenShakeModifier Active";
             }
-            else if (IsMiniSaveStatesActive)
+            else if (Config.MiniSaveStates)
             {
                 WarningText = "MiniSaveStates Active";
             }
-            else if (IsScreenShakeModifierActive)
+            else if (Config.ScreenShakeModifier)
             {
                 WarningText = "ScreenShakeModifier Active";
             }
-            
+
+            WarningText += "\nRuntime Patches";
+
             GUI.Label(
                 new Rect(20f, 20f, 200f, 200f),
                 WarningText,
@@ -86,12 +80,33 @@ public class GameManagerPatch : global::GameManager
         }
     }
 
+    public static string ConfigPath => Path.Combine(Application.persistentDataPath, "assemblyPatchesConfiguration.json");
+
     public extern void orig_Start();
 
     public void Start()
     {
+        try
+        {
+            if (!File.Exists(ConfigPath))
+            {
+                File.WriteAllText(ConfigPath, JsonUtility.ToJson(Config, true));
+            }
+
+            Config = JsonUtility.FromJson<Configuration>(File.ReadAllText(ConfigPath));
+
+            if (Constants.GAME_VERSION.StartsWith("1.5"))
+            {
+                Config.ScreenShakeModifier = false;
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+        }
+
         orig_Start();
-        if (IsMiniSaveStatesActive) SaveStateManager.LoadKeybinds();
-        if (IsScreenShakeModifierActive) ScreenShakeModifier.EditScreenShake();
+        if (Config.MiniSaveStates) SaveStateManager.LoadKeybinds();
+        if (Config.ScreenShakeModifier) ScreenShakeModifier.EditScreenShake();
     }
 }
