@@ -32,20 +32,32 @@ public class GameManagerPatch : global::GameManager
             );
 
             string WarningText = string.Empty;
-            else if (Config.MiniSaveStates && Config.ScreenShakeModifier)
-            {
-                WarningText = "MiniSaveStates and ScreenShakeModifier Active";
+            if (Config.MiniSaveStates) {
+                WarningText += "MiniSaveStates";
             }
-            else if (Config.MiniSaveStates)
-            {
-                WarningText = "MiniSaveStates Active";
+            if (Config.ScreenShakeModifier) {
+                if (String.IsNullOrEmpty(WarningText)) {
+                    WarningText = "ScreenShakeModifier";
+                }
+                else {
+                    WarningText += ", ScreenShakeModifier";
+                }
             }
-            else if (Config.ScreenShakeModifier)
-            {
-                WarningText = "ScreenShakeModifier Active";
+            if (Config.FasterIntroSkip) {
+                if (String.IsNullOrEmpty(WarningText)) {
+                    WarningText = "FasterIntroSkip";
+                }
+                else {
+                    WarningText += ", FasterIntroSkip";
+                }
             }
 
-            WarningText += "\nRuntime Patches";
+            if (!String.IsNullOrEmpty(WarningText)) {
+                WarningText += " Active\nRuntimePatches";
+            }
+            else {
+                WarningText = "Runtime Patches";
+            }
 
             GUI.Label(
                 new Rect(20f, 20f, 200f, 200f),
