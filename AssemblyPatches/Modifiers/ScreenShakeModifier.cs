@@ -18,7 +18,7 @@ public static class ScreenShakeModifier
         {
             foreach (var action in state.Actions)
             {
-                if (Constants.GAME_VERSION != "1.4.3.2")
+                if (Constants.GAME_VERSION != "1.4.3.2" && Constants.GAME_VERSION != "1.3.1.5")
                 {
                     if (action is iTweenShakePosition iTweenShakePosition)
                     {
