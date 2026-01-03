@@ -11,6 +11,9 @@ namespace Patches;
 [MonoModPatch("global::GameManager")]
 public class GameManagerPatch : global::GameManager
 {
+    [MonoModIgnore]
+    public static GameManagerPatch instance { get; }
+
     public Configuration Config = new();
 
     private void OnGUI()
