@@ -81,7 +81,7 @@ public class GameManagerPatch : global::GameManager
 
     public void Update()
     {
-        if (!IsMiniSaveStatesActive) return;
+        if (!Config.MiniSaveStates) return;
         if (Input.GetKeyDown(SaveStateManager.Keybinds.SaveStateButton))
         {
             SaveStateManager.SaveState();

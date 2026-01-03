@@ -14,7 +14,7 @@ public class OpeningSequence : global::OpeningSequence
 
     protected IEnumerator Start()
     {
-        if (Patches.GameManagerPatch.Config.FasterIntroSkip)
+        if (Patches.GameManagerPatch.instance.config.FasterIntroSkip)
             skipChargeDuration = -1;
         return orig_Start();
     }
