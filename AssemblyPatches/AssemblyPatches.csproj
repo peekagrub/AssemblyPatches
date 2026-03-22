@@ -39,13 +39,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Files Include="$(SolutionDir)Vanilla/*" />
+        <Files Include="../vanilla/*" />
         <BuildDir Include="$(TargetDir)" />
     </ItemGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Copy SkipUnchangedFiles="true" SourceFiles="@(Files)" DestinationFolder="@(BuildDir)" />
         <Delete Condition="Exists('MONOMODDED_Assembly-CSharp.dll')" Files="MONOMODDED_Assembly-CSharp.dll" />
-        <Exec WorkingDirectory="@(BuildDir)" Command="MonoMod.exe Assembly-CSharp.dll" />
-        <Copy SourceFiles="$(TargetDir)/MONOMODDED_Assembly-CSharp.dll" DestinationFiles="$(SolutionDir)/out/$(Configuration)/Assembly-CSharp.dll" />
+        <Exec WorkingDirectory="@(BuildDir)" Command="mono MonoMod.exe Assembly-CSharp.dll" />
+        <Copy SourceFiles="$(TargetDir)/MONOMODDED_Assembly-CSharp.dll" DestinationFiles="out/$(Configuration)/Assembly-CSharp.dll" />
     </Target>
 </Project>

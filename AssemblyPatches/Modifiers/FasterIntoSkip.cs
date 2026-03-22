@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if LP
+using UnityEngine;
 using MonoMod;
 using System.Collections;
 
@@ -19,3 +20,4 @@ public class OpeningSequence : global::OpeningSequence
         return orig_Start();
     }
 }
+#endif
