@@ -6,36 +6,62 @@ namespace Patches.Modifiers;
 [MonoModPatch("global::DialogueBox")]
 public class DialogueBox : global::DialogueBox
 {
-    private float normalRevealSpeed;
-    private float revealSpeed;
     private PlayMakerFSM proxyFSM;
 
-    public extern void orig_Start();
+    private bool hidden;
+    private float revealSpeed;
+    private float normalRevealSpeed;
+
     public extern void orig_SendEndEvent();
+    public extern void orig_StopTypewriter();
     public extern void orig_SpeedupTypewriter();
 
-    private void Start()
+    private bool IsActive()
     {
-        if (Patches.GameManagerPatch.instance.Config.TextMasher)
-        {
-            revealSpeed = 146;
-        }
+        HeroActions actions = GameManager.instance.inputHandler.inputActions;
+        return Patches.GameManagerPatch.instance.Config.TextMasher
+            && !hidden
+            && (actions.attack.IsPressed
+                    || actions.jump.IsPressed
+                    || actions.cast.IsPressed);
+    }
 
-        orig_Start();
+    public void FixedUpdate()
+    {
+        if (IsActive())
+        {
+            if (revealSpeed != 146)
+            {
+                StopTypewriter();
+                revealSpeed = 146;
+                normalRevealSpeed = revealSpeed;
+                StartCoroutine("TypewriteCurrentPage");
+            }
+        }
+        else
+        {
+            revealSpeed = 65;
+            normalRevealSpeed = revealSpeed;
+        }
     }
 
     public void SendEndEvent()
     {
         orig_SendEndEvent();
-        if (Patches.GameManagerPatch.instance.Config.TextMasher)
+        if (IsActive())
         {
             proxyFSM.SendEvent("NEXT");
         }
     }
 
+    public void StopTypewriter()
+    {
+        orig_StopTypewriter();
+    }
+
     public void SpeedupTypewriter()
     {
-        if (!Patches.GameManagerPatch.instance.Config.TextMasher)
+        if (!IsActive())
         {
             orig_SpeedupTypewriter();
         }
