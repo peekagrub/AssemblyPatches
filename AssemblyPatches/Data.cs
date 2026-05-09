@@ -30,6 +30,5 @@ public struct Configuration
 {
     public bool ScreenShakeModifier;
     public bool MiniSaveStates;
-    public bool FasterIntroSkip;
     public bool TextMasher;
 }

@@ -46,16 +46,6 @@ public class GameManagerPatch : global::GameManager
                     WarningText += ", ScreenShakeModifier";
                 }
             }
-#if LP
-            if (Config.FasterIntroSkip) {
-                if (String.IsNullOrEmpty(WarningText)) {
-                    WarningText = "FasterIntroSkip";
-                }
-                else {
-                    WarningText += ", FasterIntroSkip";
-                }
-            }
-#endif
             if (Config.TextMasher) {
                 if (String.IsNullOrEmpty(WarningText)) {
                     WarningText = "TextMasher";
