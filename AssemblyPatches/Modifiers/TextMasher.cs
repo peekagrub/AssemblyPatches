@@ -9,13 +9,10 @@ public class DialogueBox : global::DialogueBox
     private PlayMakerFSM proxyFSM;
 
     private bool hidden;
-    private bool typing;
-    private float revealSpeed;
-    private float normalRevealSpeed;
+    private bool fastTyping;
 
+    public extern void orig_ShowPage(int pageNum);
     public extern void orig_SendEndEvent();
-    public extern void orig_StopTypewriter();
-    public extern void orig_SpeedupTypewriter();
 
     private bool IsActive()
     {
@@ -29,25 +26,18 @@ public class DialogueBox : global::DialogueBox
 
     public void FixedUpdate()
     {
+        if (!fastTyping && IsActive())
+        {
+            Invoke("SpeedupTypewriter", 1f / 30);
+        }
+    }
+
+    public void ShowPage(int pageNum)
+    {
+        orig_ShowPage(pageNum);
         if (IsActive())
         {
-            if (revealSpeed != 146 && typing)
-            {
-                StopTypewriter();
-                revealSpeed = 146;
-                normalRevealSpeed = revealSpeed;
-                StartCoroutine("TypewriteCurrentPage");
-            }
-        }
-        else
-        {
-            if (revealSpeed != 65 && typing)
-            {
-                StopTypewriter();
-                revealSpeed = 65;
-                normalRevealSpeed = revealSpeed;
-                StartCoroutine("TypewriteCurrentPage");
-            }
+            Invoke("SpeedupTypewriter", 1f / 30);
         }
     }
 
@@ -56,20 +46,12 @@ public class DialogueBox : global::DialogueBox
         orig_SendEndEvent();
         if (IsActive())
         {
-            proxyFSM.SendEvent("NEXT");
+            Invoke("ClosePage", 1f / 30);
         }
     }
 
-    public void StopTypewriter()
+    public void ClosePage()
     {
-        orig_StopTypewriter();
-    }
-
-    public void SpeedupTypewriter()
-    {
-        if (!IsActive())
-        {
-            orig_SpeedupTypewriter();
-        }
+        proxyFSM.SendEvent("NEXT");
     }
 }
