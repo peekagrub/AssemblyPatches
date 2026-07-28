@@ -7,6 +7,8 @@ using UnityEngine;
 
 namespace Patches.Modifiers;
 
+#if v1221 || v1315 || v1432
+
 public static class ScreenShakeModifier
 {
     public static void EditScreenShake()
@@ -18,23 +20,20 @@ public static class ScreenShakeModifier
         {
             foreach (var action in state.Actions)
             {
-                if (Constants.GAME_VERSION != "1.4.3.2")
+#if v1432
+                if (action is iTweenShakePosition iTweenShakePosition)
                 {
-                    if (action is iTweenShakePosition iTweenShakePosition)
-                    {
-                        iTweenShakePosition.vector = iTweenShakePosition.vector.Value * Multiplier.multiplier;
-                    }
+                    iTweenShakePosition.vector = iTweenShakePosition.vector.Value * Multiplier.multiplier;
                 }
-                else
+#else
+                var type = action.GetType();
+                if (type.FullName == "HutongGames.PlayMaker.Actions.ShakePosition")
                 {
-                    var type = action.GetType();
-                    if (type.FullName == "HutongGames.PlayMaker.Actions.ShakePosition")
-                    {
-                        var extentsFieldInfo = type.GetField("extents", BindingFlags.Instance | BindingFlags.Public);
-                        var extents = (FsmVector3) extentsFieldInfo.GetValue(action);
-                        extentsFieldInfo.SetValue(action, (FsmVector3) (extents.Value * Multiplier.multiplier));
-                    }
+                    var extentsFieldInfo = type.GetField("extents", BindingFlags.Instance | BindingFlags.Public);
+                    var extents = (FsmVector3) extentsFieldInfo.GetValue(action);
+                    extentsFieldInfo.SetValue(action, (FsmVector3) (extents.Value * Multiplier.multiplier));
                 }
+#endif
             }
         }
     }
@@ -59,3 +58,5 @@ public static class ScreenShakeModifier
         }
     }
 }
+
+#endif

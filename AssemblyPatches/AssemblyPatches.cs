@@ -15,7 +15,6 @@ public class GameManagerPatch : global::GameManager
 
     [MonoModIgnore]
     new public static GameManagerPatch instance { get; }
-    public static const bool UndeadnameJasmine = Constants.GAME_VERSION.StartsWith("1.3") || Constants.GAME_VERSION.StartsWith("1.4") || Constants.GAME_VERSION.StartsWith("1.5");
 
     public Configuration? Config = new();
 
@@ -41,6 +40,8 @@ public class GameManagerPatch : global::GameManager
             if (Config?.MiniSaveStates == true) {
                 WarningText += "MiniSaveStates";
             }
+
+#if v1221 || v1315 || v1432
             if (Config?.ScreenShakeModifier == true) {
                 if (String.IsNullOrEmpty(WarningText)) {
                     WarningText = "ScreenShakeModifier";
@@ -49,6 +50,9 @@ public class GameManagerPatch : global::GameManager
                     WarningText += ", ScreenShakeModifier";
                 }
             }
+#endif
+
+#if v1315 || v1432 || v1578
             if (Config?.FasterIntroSkip == true) {
                 if (String.IsNullOrEmpty(WarningText)) {
                     WarningText = "FasterIntroSkip";
@@ -57,14 +61,16 @@ public class GameManagerPatch : global::GameManager
                     WarningText += ", FasterIntroSkip";
                 }
             }
-            if (UndeadnameJasmine) {
-                if (String.IsNullOrEmpty(WarningText)) {
-                    WarningText = "UndeadnameJasmine";
-                }
-                else {
-                    WarningText += ", UndeadnameJasmine";
-                }
+#endif
+
+#if v1315 || v1432 || v1578
+            if (String.IsNullOrEmpty(WarningText)) {
+                WarningText = "UndeadnameJasmine";
             }
+            else {
+                WarningText += ", UndeadnameJasmine";
+            }
+#endif
 
             if (!String.IsNullOrEmpty(WarningText)) {
                 WarningText += " Active\nRuntime Patches";
@@ -124,13 +130,6 @@ public class GameManagerPatch : global::GameManager
             }
 
             Config = JsonUtility.FromJson<Configuration>(File.ReadAllText(ConfigPath));
-
-            if (Constants.GAME_VERSION.StartsWith("1.5"))
-            {
-                if (Config is Configuration config) {
-                    config.ScreenShakeModifier = false;
-                }
-            }
         }
         catch (Exception e)
         {
@@ -139,6 +138,8 @@ public class GameManagerPatch : global::GameManager
 
         orig_Start();
         if (Config?.MiniSaveStates == true) SaveStateManager.LoadKeybinds();
+#if v1221 || v1315 || v1432
         if (Config?.ScreenShakeModifier == true) ScreenShakeModifier.EditScreenShake();
+#endif
     }
 }

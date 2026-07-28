@@ -2,6 +2,8 @@ using MonoMod;
 using UnityEngine;
 using System.Collections.Generic;
 
+#if v1315 || v1432 || v158
+
 [MonoModPatch("global::Language.Language")]
 public static class Language
 {
@@ -28,3 +30,5 @@ public static class Language
         return "#!#" + key + "#!#";
     }
 }
+
+#endif

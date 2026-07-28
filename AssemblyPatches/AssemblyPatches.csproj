@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net472</TargetFramework>
+        <Configuration>v1221;v1315;v1432;v1578</Configuration>
+        <TargetFramework Condition="'$(Configuration)' == 'v1578'">net472</TargetFramework>
+        <TargetFramework Condition="'$(Configuration)' != 'v1578'">net35</TargetFramework>
         <AssemblyName>Assembly-CSharp.mm</AssemblyName>
         <LangVersion>latest</LangVersion>
         <Platforms>AnyCPU</Platforms>
