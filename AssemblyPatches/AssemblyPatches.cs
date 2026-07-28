@@ -14,7 +14,7 @@ public class GameManagerPatch : global::GameManager
     [MonoModIgnore]
     public static GameManagerPatch instance { get; }
 
-    public Configuration Config = new();
+    public Configuration? Config = new();
 
     private void OnGUI()
     {
@@ -35,10 +35,10 @@ public class GameManagerPatch : global::GameManager
             );
 
             string WarningText = string.Empty;
-            if (Config.MiniSaveStates) {
+            if (Config?.MiniSaveStates == true) {
                 WarningText += "MiniSaveStates";
             }
-            if (Config.ScreenShakeModifier) {
+            if (Config?.ScreenShakeModifier == true) {
                 if (String.IsNullOrEmpty(WarningText)) {
                     WarningText = "ScreenShakeModifier";
                 }
@@ -46,7 +46,7 @@ public class GameManagerPatch : global::GameManager
                     WarningText += ", ScreenShakeModifier";
                 }
             }
-            if (Config.FasterIntroSkip) {
+            if (Config?.FasterIntroSkip == true) {
                 if (String.IsNullOrEmpty(WarningText)) {
                     WarningText = "FasterIntroSkip";
                 }
@@ -82,9 +82,13 @@ public class GameManagerPatch : global::GameManager
         }
     }
 
-    public void Update()
+    public extern void orig_Update();
+
+    new public void Update()
     {
-        if (!Config.MiniSaveStates) return;
+        orig_Update();
+
+        if (Config?.MiniSaveStates != true) return;
         if (Input.GetKeyDown(SaveStateManager.Keybinds.SaveStateButton))
         {
             SaveStateManager.SaveState();
@@ -105,14 +109,16 @@ public class GameManagerPatch : global::GameManager
         {
             if (!File.Exists(ConfigPath))
             {
-                File.WriteAllText(ConfigPath, JsonUtility.ToJson(Config, true));
+                File.WriteAllText(ConfigPath, JsonUtility.ToJson(new Configuration(), true));
             }
 
             Config = JsonUtility.FromJson<Configuration>(File.ReadAllText(ConfigPath));
 
             if (Constants.GAME_VERSION.StartsWith("1.5"))
             {
-                Config.ScreenShakeModifier = false;
+                if (Config is Configuration config) {
+                    config.ScreenShakeModifier = false;
+                }
             }
         }
         catch (Exception e)
@@ -121,7 +127,7 @@ public class GameManagerPatch : global::GameManager
         }
 
         orig_Start();
-        if (Config.MiniSaveStates) SaveStateManager.LoadKeybinds();
-        if (Config.ScreenShakeModifier) ScreenShakeModifier.EditScreenShake();
+        if (Config?.MiniSaveStates == true) SaveStateManager.LoadKeybinds();
+        if (Config?.ScreenShakeModifier == true) ScreenShakeModifier.EditScreenShake();
     }
 }
