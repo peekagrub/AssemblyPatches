@@ -1,12 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net35</TargetFramework>
+        <TargetFramework>net472</TargetFramework>
         <AssemblyName>Assembly-CSharp.mm</AssemblyName>
         <LangVersion>latest</LangVersion>
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
+
+    <PropertyGroup>
+        <Mono Condition="$(OS) == WINDOWS_NT" />
+        <Mono Condition="$(OS) != WINDOWS_NT">mono</Mono>
+    </PropertyGroup>
+
     <ItemGroup>
-        <PackageReference Include="MonoMod" Version="21.3.1.1">
+        <PackageReference Include="MonoMod" Version="22.7.31.1">
             <IncludeAssets>all</IncludeAssets>
         </PackageReference>
     </ItemGroup>
@@ -45,7 +51,7 @@
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Copy SkipUnchangedFiles="true" SourceFiles="@(Files)" DestinationFolder="@(BuildDir)" />
         <Delete Condition="Exists('MONOMODDED_Assembly-CSharp.dll')" Files="MONOMODDED_Assembly-CSharp.dll" />
-        <Exec WorkingDirectory="@(BuildDir)" Command="MonoMod.exe Assembly-CSharp.dll" />
+        <Exec WorkingDirectory="@(BuildDir)" Command="$(Mono) MonoMod.exe Assembly-CSharp.dll" />
         <Copy SourceFiles="$(TargetDir)/MONOMODDED_Assembly-CSharp.dll" DestinationFiles="$(SolutionDir)/out/$(Configuration)/Assembly-CSharp.dll" />
     </Target>
 </Project>
