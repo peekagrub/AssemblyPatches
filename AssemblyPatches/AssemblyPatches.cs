@@ -63,6 +63,15 @@ public class GameManagerPatch : global::GameManager
             }
 #endif
 
+            if (Config?.TextMasher == true) {
+                if (String.IsNullOrEmpty(WarningText)) {
+                    WarningText = "TextMasher";
+                }
+                else {
+                    WarningText += ", TextMasher";
+                }
+            }
+
 #if v1315 || v1432 || v1578
             if (String.IsNullOrEmpty(WarningText)) {
                 WarningText = "UndeadnameJasmine";
