@@ -12,7 +12,7 @@ namespace Patches;
 public class GameManagerPatch : global::GameManager
 {
     [MonoModIgnore]
-    public static GameManagerPatch instance { get; }
+    new public static GameManagerPatch instance { get; }
 
     public Configuration? Config = new();
 
@@ -56,7 +56,7 @@ public class GameManagerPatch : global::GameManager
             }
 
             if (!String.IsNullOrEmpty(WarningText)) {
-                WarningText += " Active\nRuntimePatches";
+                WarningText += " Active\nRuntime Patches";
             }
             else {
                 WarningText = "Runtime Patches";
