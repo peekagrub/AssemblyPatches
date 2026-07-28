@@ -2,6 +2,7 @@ using MonoMod;
 using Patches.Modifiers;
 using System;
 using System.IO;
+using System.Collections.Generic;
 using UnityEngine;
 
 #pragma warning disable CS0626
@@ -11,8 +12,10 @@ namespace Patches;
 [MonoModPatch("global::GameManager")]
 public class GameManagerPatch : global::GameManager
 {
+
     [MonoModIgnore]
     new public static GameManagerPatch instance { get; }
+    public static const bool UndeadnameJasmine = Constants.GAME_VERSION.StartsWith("1.3") || Constants.GAME_VERSION.StartsWith("1.4") || Constants.GAME_VERSION.StartsWith("1.5");
 
     public Configuration? Config = new();
 
@@ -52,6 +55,14 @@ public class GameManagerPatch : global::GameManager
                 }
                 else {
                     WarningText += ", FasterIntroSkip";
+                }
+            }
+            if (UndeadnameJasmine) {
+                if (String.IsNullOrEmpty(WarningText)) {
+                    WarningText = "UndeadnameJasmine";
+                }
+                else {
+                    WarningText += ", UndeadnameJasmine";
                 }
             }
 
